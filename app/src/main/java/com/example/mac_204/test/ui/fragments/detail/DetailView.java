@@ -15,4 +15,10 @@ public interface DetailView extends MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void updLocation(LocationUIModel locationUIModel);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void onError(String error);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void updFavorite(boolean favorite);
 }

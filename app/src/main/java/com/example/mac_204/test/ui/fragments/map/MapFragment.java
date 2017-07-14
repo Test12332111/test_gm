@@ -6,9 +6,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenterTag;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -38,7 +42,17 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Map
 
     public static final String TAG_FRAGMENT = "TAG_MAP_FRAGMENT";
 
-    @InjectPresenter MapPresenter mapPresenter;
+    @InjectPresenter(type = PresenterType.GLOBAL) MapPresenter mapPresenter;
+
+    @ProvidePresenterTag(presenterClass = MapPresenter.class, type = PresenterType.GLOBAL)
+    String provideMapPresenterTag() {
+        return MapPresenter.class.getName();
+    }
+
+    @ProvidePresenter(type = PresenterType.GLOBAL)
+    MapPresenter provideMapPresenter() {
+        return new MapPresenter();
+    }
 
     private GoogleMap mMap;
 
@@ -80,7 +94,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Map
 
     @Override
     public void onError(String error) {
-
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,8 +106,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Map
     public void updLocations(List<LocationUIModel> locationUIModels) {
         for (int i = 0; i < locationUIModels.size(); i++) {
             LocationUIModel location = locationUIModels.get(i);
-            LatLng sydney = new LatLng(location.getLat(), location.getLan());
-            final MarkerOptions markerOptions = new MarkerOptions().position(sydney)
+            LatLng latLng = new LatLng(location.getLat(), location.getLan());
+            final MarkerOptions markerOptions = new MarkerOptions().position(latLng)
                     .title(location.getName());
             final Marker myMarker = mMap.addMarker(markerOptions);
             mMap.addMarker(markerOptions);

@@ -13,6 +13,7 @@ import com.example.mac_204.test.inject.module.FragmentModule;
 import com.example.mac_204.test.inject.module.NetModule;
 import com.example.mac_204.test.inject.qualifier.ApplicationContext;
 import com.example.mac_204.test.ui.fragments.detail.DetailPresenter;
+import com.example.mac_204.test.ui.fragments.favorites.FavoritesPresenter;
 import com.example.mac_204.test.ui.fragments.list.ListFragment;
 import com.example.mac_204.test.ui.fragments.list.ListPresenter;
 import com.example.mac_204.test.ui.fragments.map.MapPresenter;
@@ -27,6 +28,8 @@ import dagger.Component;
 @Component(modules = {ApplicationModule.class, NetModule.class})
 public interface ApplicationComponent {
 
+
+    void inject(FavoritesPresenter presenter);
 
     void inject(DetailPresenter presenter);
 

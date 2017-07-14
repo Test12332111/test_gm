@@ -4,12 +4,13 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -21,8 +22,6 @@ import com.example.mac_204.test.R;
 import com.example.mac_204.test.data.ui.models.LocationUIModel;
 import com.example.mac_204.test.data.ui.models.SightUIModel;
 import com.example.mac_204.test.ui.fragments.BaseFragment;
-import com.example.mac_204.test.ui.fragments.list.ListFragment;
-import com.example.mac_204.test.util.ScreenUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,15 +47,14 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
 
     public static final String BUNDLE_KEY_LOCATION_MODEL = "BUNDLE_KEY_LOCATION_MODEL";
 
-    @Inject
-    DetailAdapter detailAdapter;
-    @InjectPresenter
-    DetailPresenter detailPresenter;
+    @Inject DetailAdapter detailAdapter;
+    @InjectPresenter DetailPresenter detailPresenter;
 
-    @BindView(R.id.recycler_list_sights)
-    RecyclerView recyclerListSights;
+    @BindView(R.id.recycler_list_sights) RecyclerView recyclerListSights;
 
     private GoogleMap mMap;
+    private Toolbar toolbar;
+    private LocationUIModel bundleLocationUIModel;
 
 
     @ProvidePresenter
@@ -89,6 +87,7 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getDataFromBundle();
         super.onCreate(savedInstanceState);
         fragmentComponent().inject(this);
     }
@@ -107,6 +106,7 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerSights();
+        prepareToolbar();
     }
 
     @Override
@@ -119,6 +119,33 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
     public void updLocation(LocationUIModel locationUIModel) {
         addLocationToMap(locationUIModel);
         updSights(locationUIModel);
+    }
+
+    @Override
+    public void onError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updFavorite(boolean favorite) {
+        toolbar.getMenu().getItem(0).setIcon(favorite
+                ? R.drawable.ic_heart
+                : R.drawable.ic_heart_outline);
+    }
+
+    private void prepareToolbar(){
+        toolbar = (Toolbar) (getActivity().findViewById(R.id.toolbar));
+        toolbar.setTitle(bundleLocationUIModel.getName());
+        toolbar.inflateMenu(R.menu.fragment_detail);
+
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.item_add_to_favorite:
+                    detailPresenter.updFavorite();
+                    break;
+            }
+            return false;
+        });;
     }
 
     private void addLocationToMap(LocationUIModel location){
@@ -164,6 +191,15 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
         this.recyclerListSights.setLayoutManager(linearLayoutManager);
         this.recyclerListSights.setAdapter(detailAdapter);
     }
+
+    private void getDataFromBundle() {
+        if (getArguments() != null) {
+            if (getArguments().containsKey(BUNDLE_KEY_LOCATION_MODEL)) {
+                this.bundleLocationUIModel = (LocationUIModel) getArguments().getSerializable(BUNDLE_KEY_LOCATION_MODEL);
+            }
+        }
+    }
+
 
 }
 

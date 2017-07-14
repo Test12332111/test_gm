@@ -10,6 +10,9 @@ import java.util.List;
 
 public class LocationRestModel {
 
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("name")
     private String name;
 
@@ -28,9 +31,12 @@ public class LocationRestModel {
     @SerializedName("sights")
     private List<SightRestModel> sights;
 
+    public LocationRestModel() {
+    }
 
-
-    public LocationRestModel(String name, String iconUrl, String backgroundUrl, double lat, double lan, List<SightRestModel> sights) {
+    public LocationRestModel(String id, String name, String iconUrl, String backgroundUrl,
+                             double lat, double lan, List<SightRestModel> sights) {
+        this.id = id;
         this.name = name;
         this.iconUrl = iconUrl;
         this.backgroundUrl = backgroundUrl;
@@ -61,5 +67,9 @@ public class LocationRestModel {
 
     public List<SightRestModel> getSights() {
         return sights;
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -1,5 +1,7 @@
 package com.example.mac_204.test.ui.fragments.map;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.arellomobile.mvp.MvpView;
@@ -44,12 +46,6 @@ public class MapPresenter extends MvpPresenter<MapView> {
         RxUtil.unsubscribe(getLocationsSubscription);
         getViewState().showRefresh(true);
         getLocationsSubscription = dataManager.getLocations()
-                .map(new Func1<List<LocationRestModel>, List<LocationUIModel>>() {
-                    @Override
-                    public List<LocationUIModel> call(List<LocationRestModel> locationRestModels) {
-                        return UIMapper.mapLocationModels(locationRestModels);
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<List<LocationUIModel>>() {
@@ -61,7 +57,7 @@ public class MapPresenter extends MvpPresenter<MapView> {
                     @Override
                     public void onError(Throwable e) {
                         getViewState().showRefresh(false);
-                        getViewState().onError("gg");  // TODO // FIXME: 7/13/17
+                        getViewState().onError("Error");
                     }
 
                     @Override

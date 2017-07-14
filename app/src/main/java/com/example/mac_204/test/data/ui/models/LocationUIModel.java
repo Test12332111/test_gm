@@ -12,6 +12,8 @@ import java.util.List;
 
 public class LocationUIModel implements Serializable{
 
+    private String id;
+
     private String name;
 
     private String iconUrl;
@@ -26,8 +28,9 @@ public class LocationUIModel implements Serializable{
 
     private boolean isFavorite;
 
-    public LocationUIModel(String name, String iconUrl, String backgroundUrl, double lat,
+    public LocationUIModel(String id, String name, String iconUrl, String backgroundUrl, double lat,
                            double lan, List<SightUIModel> sights) {
+        this.id = id;
         this.name = name;
         this.iconUrl = iconUrl;
         this.backgroundUrl = backgroundUrl;
@@ -66,5 +69,9 @@ public class LocationUIModel implements Serializable{
 
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
+    }
+
+    public String getId() {
+        return id;
     }
 }

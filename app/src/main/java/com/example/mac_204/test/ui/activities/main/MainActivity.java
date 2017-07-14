@@ -1,66 +1,76 @@
-package com.example.mac_204.test.ui.activities;
+package com.example.mac_204.test.ui.activities.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.example.mac_204.test.R;
+import com.example.mac_204.test.data.remote.models.LocationRestModel;
+import com.example.mac_204.test.ui.activities.BaseActivity;
 import com.example.mac_204.test.ui.fragments.BaseFragment;
-import com.example.mac_204.test.ui.fragments.list.ListFragment;
-import com.example.mac_204.test.ui.fragments.map.MapFragment;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MainView {
 
-    private TextView mTextMessage;
+    @InjectPresenter MainPresenter mainPresenter;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    setFragment(ListFragment.getInstance());
-                    return true;
-                case R.id.navigation_dashboard:
-                    setFragment(MapFragment.getInstance());
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
+            mainPresenter.setFragment(item.getItemId());
+            item.setChecked(true);
             return false;
         }
 
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        setFirstFragment(ListFragment.getInstance());
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            int stackSize = getSupportFragmentManager().getBackStackEntryCount();
+            if (stackSize == 0) {
+                finish();
+            }
+        });
     }
 
+    @Override
+    public void onBackPressed() {
+        int stackSize = getSupportFragmentManager().getBackStackEntryCount();
+        if (stackSize == 1) {
+            moveTaskToBack(true);
+            return;
+        }
 
+        super.onBackPressed();
+    }
+
+    //MVP methods
+
+    @Override
+    public void setTapFragment(BaseFragment fragment) {
+        setFragment(fragment);
+    }
+
+    @Override
     public void setFirstFragment(BaseFragment fragment) {
-        if (getFragmentManager().findFragmentByTag(fragment
+        if (getSupportFragmentManager().findFragmentByTag(fragment
                 .getFragmentTag()) == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content, fragment, fragment.getFragmentTag())
+                    .add(R.id.content, fragment, fragment.getFragmentTag())
                     .addToBackStack(fragment.getFragmentTag())
                     .commitAllowingStateLoss();
         }
-
     }
 
     private void setFragment(BaseFragment fragment) {
@@ -69,5 +79,6 @@ public class MainActivity extends BaseActivity {
                 .replace(R.id.content, fragment, fragment.getFragmentTag())
                 .commitAllowingStateLoss();
     }
+
 
 }

@@ -42,6 +42,12 @@ public class ListPresenter extends MvpPresenter<ListView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+
+    }
+
+    @Override
+    public void attachView(ListView view) {
+        super.attachView(view);
         getLocations();
     }
 
@@ -55,12 +61,6 @@ public class ListPresenter extends MvpPresenter<ListView> {
         RxUtil.unsubscribe(getLocationsSubscription);
         getViewState().showRefresh(true);
         getLocationsSubscription = dataManager.getLocations()
-                .map(new Func1<List<LocationRestModel>, List<LocationUIModel>>() {
-                    @Override
-                    public List<LocationUIModel> call(List<LocationRestModel> locationRestModels) {
-                        return UIMapper.mapLocationModels(locationRestModels);
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<List<LocationUIModel>>() {
@@ -72,7 +72,7 @@ public class ListPresenter extends MvpPresenter<ListView> {
                     @Override
                     public void onError(Throwable e) {
                         getViewState().showRefresh(false);
-                        getViewState().onError("gg");  // TODO // FIXME: 7/13/17
+                        getViewState().onError("Error");
                     }
 
                     @Override

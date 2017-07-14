@@ -72,6 +72,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.BasicHolder> {
         final LocationUIModel location = locationUIModelList.get(position);
         holder.relativeContainer.getLayoutParams().height = (ScreenUtil.getDisplayWidth(context) / spanCount);
         holder.txtName.setText(location.getName());
+        holder.imgFavorite.setVisibility(location.isFavorite() ? View.VISIBLE : View.GONE);
         Glide.with(context.getApplicationContext())
                 .load(location.getBackgroundUrl())
                 .override(itemHeight, itemHeight)
@@ -104,6 +105,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.BasicHolder> {
     static class BasicHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.relative_container) RelativeLayout relativeContainer;
+        @BindView(R.id.img_favorite) ImageView imgFavorite;
         @BindView(R.id.image_image) ImageView imageImage;
         @BindView(R.id.txt_name) TextView txtName;
 

@@ -17,9 +17,9 @@ public class SightRestModel extends LocationRestModel{
     private String type;
 
 
-    public SightRestModel(String name, String iconUrl, String backgroundUrl, double lat,
-                          double lan, String description, String type) {
-        super(name, iconUrl, backgroundUrl, lat, lan, null);
+    public SightRestModel(String id, String name, String iconUrl, String backgroundUrl,
+                          double lat, double lan, String description, String type) {
+        super(id, name, iconUrl, backgroundUrl, lat, lan, null);
         this.description = description;
         this.type = type;
     }

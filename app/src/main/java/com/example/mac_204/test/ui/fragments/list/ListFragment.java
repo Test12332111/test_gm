@@ -1,5 +1,6 @@
 package com.example.mac_204.test.ui.fragments.list;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,12 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.PresenterType;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenterTag;
 import com.example.mac_204.test.R;
 import com.example.mac_204.test.data.remote.models.LocationRestModel;
 import com.example.mac_204.test.data.ui.models.LocationUIModel;
+import com.example.mac_204.test.ui.activities.detail.DetailActivity;
 import com.example.mac_204.test.ui.fragments.BaseFragment;
 import com.example.mac_204.test.ui.fragments.detail.DetailFragment;
 import com.example.mac_204.test.util.ScreenUtil;
@@ -37,12 +42,20 @@ public class ListFragment extends BaseFragment implements ListAdapter.OnItemClic
     public static final String TAG_FRAGMENT = "TAG_LIST_FRAGMENT";
 
     @Inject ListAdapter listAdapter;
-    @InjectPresenter ListPresenter listPresenter;
+    @InjectPresenter(type = PresenterType.GLOBAL) ListPresenter listPresenter;
+
+    @ProvidePresenterTag(presenterClass = ListPresenter.class, type = PresenterType.GLOBAL)
+    String provideListPresenterTag() {
+        return ListPresenter.class.getName();
+    }
+
+    @ProvidePresenter(type = PresenterType.GLOBAL)
+    ListPresenter provideListPresenter() {
+        return new ListPresenter();
+    }
 
     @BindView(R.id.recycler_list_points) RecyclerView recyclerListPoints;
     @BindView(R.id.swipe_refresh_upd) SwipeRefreshLayout swipeRefreshUpd;
-
-
 
     public static ListFragment getInstance() {
         ListFragment fragment = new ListFragment();
@@ -78,12 +91,8 @@ public class ListFragment extends BaseFragment implements ListAdapter.OnItemClic
 
     @Override
     public void onItemClick(LocationUIModel locationUIModel) {
-        DetailFragment fragment = DetailFragment.getInstance(locationUIModel);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.content, fragment, fragment.getFragmentTag())
-                .addToBackStack(fragment.getFragmentTag())
-                .commitAllowingStateLoss();
+        Intent intent = DetailActivity.getIntent(getContext(),locationUIModel);
+        startActivity(intent);
     }
 
     @Override
@@ -95,7 +104,7 @@ public class ListFragment extends BaseFragment implements ListAdapter.OnItemClic
 
     @Override
     public void onError(String error) {
-
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -120,7 +129,5 @@ public class ListFragment extends BaseFragment implements ListAdapter.OnItemClic
         this.listAdapter.setOnItemClickListener(this);
         this.recyclerListPoints.setAdapter(listAdapter);
     }
-
-
 
 }

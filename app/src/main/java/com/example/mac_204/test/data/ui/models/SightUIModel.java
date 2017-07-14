@@ -15,8 +15,9 @@ public class SightUIModel extends LocationUIModel implements Serializable {
 
     private String type;
 
-    public SightUIModel(String name, String iconUrl, String backgroundUrl, double lat, double lan, String description, String type) {
-        super(name, iconUrl, backgroundUrl, lat, lan, null);
+    public SightUIModel(String id, String name, String iconUrl, String backgroundUrl, double lat,
+                        double lan, String description, String type) {
+        super(id, name, iconUrl, backgroundUrl, lat, lan, null);
         this.description = description;
         this.type = type;
     }

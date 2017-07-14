@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-
     android:padding="@dimen/dimen_2">
+
+
+
 
     <ImageView
         android:id="@+id/image_image"
@@ -16,6 +18,18 @@
         android:adjustViewBounds="true"
         android:background="@color/colorPreload"
         android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/img_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_heart"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/dimen_16"
+        android:layout_marginTop="@dimen/dimen_16" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/relative_info"
