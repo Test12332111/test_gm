@@ -22,6 +22,7 @@ import com.example.mac_204.test.data.ui.models.LocationUIModel;
 import com.example.mac_204.test.ui.fragments.BaseFragment;
 import com.example.mac_204.test.ui.fragments.list.ListFragment;
 import com.example.mac_204.test.ui.fragments.list.ListPresenter;
+import com.example.mac_204.test.util.ViewUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -110,7 +111,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Map
             final MarkerOptions markerOptions = new MarkerOptions().position(latLng)
                     .title(location.getName());
             final Marker myMarker = mMap.addMarker(markerOptions);
-            mMap.addMarker(markerOptions);
             Glide.with(getContext().getApplicationContext())
                     .load(location.getIconUrl())
                     .asBitmap()
@@ -120,7 +120,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Map
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                             if (getContext() != null) {
                                 myMarker.remove();
-                                BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resource);
+                                BitmapDescriptor icon = BitmapDescriptorFactory
+                                        .fromBitmap(Bitmap.createScaledBitmap(resource, ViewUtil.dpToPx(72), ViewUtil.dpToPx(72), false));
                                 markerOptions.icon(icon);
                                 mMap.addMarker(markerOptions);
                             }

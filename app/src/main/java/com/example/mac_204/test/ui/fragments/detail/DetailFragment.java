@@ -159,7 +159,6 @@ public class DetailFragment extends BaseFragment implements OnMapReadyCallback, 
             final MarkerOptions markerOptions = new MarkerOptions().position(latLng)
                     .title(location.getName());
             final Marker myMarker = mMap.addMarker(markerOptions);
-            mMap.addMarker(markerOptions);
             Glide.with(getContext().getApplicationContext())
                     .load(sightUIModel.getIconUrl())
                     .asBitmap()
